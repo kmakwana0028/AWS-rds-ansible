@@ -1,31 +1,28 @@
-====================
 1-cr_vpc.yml. - cft template
-====================
-Creates the VPC with 2 private & 2 public subnets across 2 AZ
+    Creates the VPC with 2 private & 2 public subnets across 2 AZ
 
-* CloudFormation Name = rds-vpc
+    CloudFormation Name = rds-vpc
 
-======================
+----------------------------------
 Setup 2-cr-security_group.yml
-======================
+----------------------------------
 
 Pre-requisite
--------------
+----------------------------------
 Creates Security groups for VPC with 2 private & 2 public subnets across 2 AZ
 
 
-======================
+
 Setup 3-cr-bastion-host.yml
-======================
+
 Sets up an EC2 instance that is used for connecting/testing the cluster. 
 
 Stack deletion: 
----------------
+
 The stack creates a Host Security group that is used by other bastion hosts etc. 
 
-=====
-Required Tools
-=====
+Required Tools:
+
 These tools will be installed on the bastion host.
 1. git client
 2. psql
