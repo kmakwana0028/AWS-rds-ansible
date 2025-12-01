@@ -6,8 +6,6 @@
 ##
 ## Dependencies:
 ## none
-##
-## This sample code is made available under the MIT-0 license. See the LICENSE file.
 
 AWSTemplateFormatVersion: 2010-09-09
 Description: Host for interacting with the DB cluster
@@ -15,7 +13,7 @@ Description: Host for interacting with the DB cluster
 Parameters:
   TemplateName:
     Type: String
-    Default: rdsa-bastion-host
+    Default: rds-bastion-host
     Description: Name used for different elements created.
   KeyName:
     Description: Amazon EC2 KeyPair
@@ -24,7 +22,7 @@ Parameters:
     Type: String
   BastionHostInstanceName:
     Description: Name of the Bastion Host Instance
-    Default: 'RDSA Bastion Host Instance'
+    Default: 'RDS Bastion Host Instance'
     Type: String
   VpcId:
     Description: Enter the VPC ID
@@ -69,10 +67,10 @@ Resources:
           FromPort: "8080"  # Used for PgAdmin
           ToPort: "8080"
           CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: "3306"  # Allow connection to local mysql from DMS
-          ToPort: "3306"
-          CidrIp: 10.0.0.0/16
+        # - IpProtocol: tcp
+        #   FromPort: "3306"  # Allow connection to local mysql from DMS
+        #   ToPort: "3306"
+        #   CidrIp: 10.0.0.0/16
         - IpProtocol: tcp
           FromPort: "3389"  # Windows RDP
           ToPort: "3389"
@@ -128,7 +126,7 @@ Resources:
       IamInstanceProfile: !Ref BastionHostInstanceProfile
       Tags:
         - Key: Name
-          #Value: "RDSA Bastion Host Instance"
+          #Value: "RDS Bastion Host Instance"
           Value: !Ref BastionHostInstanceName
       # KeyName: !Ref KeyName
       KeyName: !If [HasNoKeyName,  !Ref AWS::NoValue , !Ref KeyName]
