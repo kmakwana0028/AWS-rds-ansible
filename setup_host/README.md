@@ -7,14 +7,13 @@
 Setup 2-cr-security_group.yml
 ----------------------------------
 
-Pre-requisite
-----------------------------------
+Pre-requisite:
 Creates Security groups for VPC with 2 private & 2 public subnets across 2 AZ
 
 
-
+----------------------------------
 Setup 3-cr-bastion-host.yml
-
+----------------------------------
 Sets up an EC2 instance that is used for connecting/testing the cluster. 
 
 Stack deletion: 
