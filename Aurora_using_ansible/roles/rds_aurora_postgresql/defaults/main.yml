@@ -1,0 +1,35 @@
+---
+# defaults file for rds_aurora_postgresql
+
+# AWS Region
+aws_region: us-east-1
+
+# Stack name for CloudFormation
+stack_name: rds-aurora-postgresql-stack
+
+# Deployment environment tag (renamed from 'environment' to avoid Ansible reserved name)
+deployment_env: dev
+
+# Database Engine Version
+db_engine_version: "16.1"
+
+# Database Instance Class
+db_instance_class: db.t3.medium
+
+# Database Master Username
+db_master_username: postgres
+
+# Database Master Password (should be overridden in vault or secure variables)
+db_master_user_password: postgres123!
+
+# VPC ID for RDS Aurora
+rds_aurora_vpc: ""
+
+# Private Subnets (comma-separated)
+private_subnets: ""
+
+# VPC Security Group for Cluster
+vpc_security_group_cluster: ""
+
+# Template Name for resource naming
+template_name: rdsa-postgresql

@@ -1,0 +1,31 @@
+---
+# Ansible Playbook to Deploy RDS Aurora PostgreSQL Cluster using CloudFormation
+#
+# Usage:
+#   ansible-playbook deploy_rds_aurora.yml
+#
+# To override variables:
+#   ansible-playbook deploy_rds_aurora.yml -e "environment=prod"
+#
+# To use vault for sensitive data:
+#   ansible-playbook deploy_rds_aurora.yml --ask-vault-pass
+
+- name: Deploy RDS Aurora PostgreSQL Cluster
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars_files:
+    - group_vars/rds_aurora_vars.yml
+
+  roles:
+    - role: rds_aurora_postgresql
+
+  post_tasks:
+    - name: Display Deployment Summary
+      ansible.builtin.debug:
+        msg:
+          - "========================================="
+          - "RDS Aurora PostgreSQL Deployment Complete"
+          - "========================================="
+          - "Check rds_cluster_output.txt for connection details"

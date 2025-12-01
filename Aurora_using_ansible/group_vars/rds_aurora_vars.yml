@@ -1,0 +1,38 @@
+---
+# Variables for RDS Aurora PostgreSQL Deployment
+# Override these values as needed for different environments
+
+# AWS Region
+aws_region: us-east-1
+
+# CloudFormation Stack Name
+stack_name: rds-aurora-postgresql-stack
+
+# Deployment environment (renamed from 'environment' to avoid Ansible reserved name)
+deployment_env: dev
+
+# Template Name for resource naming
+template_name: rds-ansible-postgresqlA
+
+# Database Engine Version
+db_engine_version: "16.1"
+
+# Database Instance Class
+db_instance_class: db.t3.medium
+
+# Database Master Username
+db_master_username: postgres
+
+# Database Master Password
+# IMPORTANT: In production, use Ansible Vault to encrypt this value
+# Example: ansible-vault encrypt_string 'postgres123!' --name 'db_master_user_password'
+db_master_user_password: postgres123!
+
+# VPC ID for RDS Aurora
+rds_aurora_vpc: vpc-0293da6a0c2c6b6a1
+
+# Private Subnets (comma-separated)
+private_subnets: "subnet-0ae0d087f2a0ca680,subnet-02851772091045e5e"
+
+# VPC Security Group for Cluster
+vpc_security_group_cluster: sg-0bceef39919a6ebbf

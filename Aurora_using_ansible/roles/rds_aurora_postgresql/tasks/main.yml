@@ -1,0 +1,123 @@
+---
+# Generate cloudformation template and run it create db as 
+# AWS RDS Aurora Postgresql
+
+- name: Deploy RDS Aurora PostgreSQL Cluster using CloudFormation
+  amazon.aws.cloudformation:
+    stack_name: "{{ stack_name }}"
+    state: present
+    region: "{{ aws_region }}"
+    disable_rollback: false
+    template_body: |
+      AWSTemplateFormatVersion: '2010-09-09'
+      Description: Amazon RDS PostgreSQL Database Cluster Creation
+
+      Mappings:
+        ClusterSettings:
+          global:
+            dbSchema: labdb
+            dbDriver: pgsql
+
+      Resources:
+        ClusterDBSubnetGroup:
+          Type: AWS::RDS::DBSubnetGroup
+          Properties:
+            DBSubnetGroupDescription: {{ template_name }}-db-subnet-group
+            DBSubnetGroupName: {{ template_name }}-db-subnet-group
+            SubnetIds:
+              - {{ private_subnets.split(',')[0] }}
+              - {{ private_subnets.split(',')[1] }}
+
+        DBCluster:
+          Type: AWS::RDS::DBCluster
+          DependsOn:
+            - ClusterDBSubnetGroup
+          Properties:
+            DBClusterIdentifier: {{ template_name }}-cluster
+            Engine: aurora-postgresql
+            EngineVersion: '{{ db_engine_version }}'
+            Port: 5432
+            DBSubnetGroupName: !Ref ClusterDBSubnetGroup
+            BackupRetentionPeriod: 7
+            MasterUsername: {{ db_master_username }}
+            MasterUserPassword: {{ db_master_user_password }}
+            DatabaseName: !FindInMap [ClusterSettings, global, dbSchema]
+            StorageEncrypted: true
+            VpcSecurityGroupIds:
+              - {{ vpc_security_group_cluster }}
+
+        DBPrimaryNode:
+          Type: AWS::RDS::DBInstance
+          DependsOn: DBCluster
+          Properties:
+            DBInstanceIdentifier: {{ template_name }}-node-01
+            DBClusterIdentifier: !Ref DBCluster
+            DBInstanceClass: {{ db_instance_class }}
+            Engine: aurora-postgresql
+            EngineVersion: '{{ db_engine_version }}'
+            PubliclyAccessible: false
+
+      Outputs:
+        DBClusterId:
+          Description: Cluster resource ARN
+          Value: !Ref DBCluster
+        clusterEndpoint:
+          Description: Aurora Cluster Endpoint
+          Value: !GetAtt DBCluster.Endpoint.Address
+        readerEndpoint:
+          Description: Aurora Reader Endpoint
+          Value: !GetAtt DBCluster.ReadEndpoint.Address
+        Port:
+          Description: Aurora Endpoint Port
+          Value: !GetAtt DBCluster.Endpoint.Port
+        DatabaseName:
+          Description: Database Name
+          Value: !FindInMap [ClusterSettings, global, dbSchema]
+        DBUsername:
+          Description: Database master username
+          Value: {{ db_master_username }}
+        ClusterDBSubnetGroup:
+          Description: Subnet Group created for the DB cluster
+          Value: !Ref ClusterDBSubnetGroup
+    tags:
+      Stack: "{{ stack_name }}"
+      Env: "{{ deployment_env | default('dev') }}"
+      ManagedBy: "ansible"
+  register: rds_stack_output
+
+- name: Display CloudFormation Stack Outputs
+  ansible.builtin.debug:
+    msg:
+      - "Stack Name: {{ stack_name }}"
+      - "Stack Status: {{ rds_stack_output.output }}"
+      - "Cluster Endpoint: {{ rds_stack_output.stack_outputs.clusterEndpoint | default('Creating...') }}"
+      - "Reader Endpoint: {{ rds_stack_output.stack_outputs.readerEndpoint | default('Creating...') }}"
+      - "Port: {{ rds_stack_output.stack_outputs.Port | default('5432') }}"
+      - "Database Name: {{ rds_stack_output.stack_outputs.DatabaseName | default('labdb') }}"
+      - "DB Username: {{ db_master_username }}"
+  when: rds_stack_output is defined and rds_stack_output.changed
+
+- name: Save Stack Outputs to File
+  ansible.builtin.copy:
+    content: |
+      RDS Aurora PostgreSQL Cluster Details
+      =====================================
+      Stack Name: {{ stack_name }}
+      Region: {{ aws_region }}
+      Template Name: {{ template_name }}
+
+      Cluster Endpoint: {{ rds_stack_output.stack_outputs.clusterEndpoint | default('Check AWS Console') }}
+      Reader Endpoint: {{ rds_stack_output.stack_outputs.readerEndpoint | default('Check AWS Console') }}
+      Port: {{ rds_stack_output.stack_outputs.Port | default('5432') }}
+      Database Name: {{ rds_stack_output.stack_outputs.DatabaseName | default('labdb') }}
+      DB Username: {{ db_master_username }}
+      DB Password: {{ db_master_user_password }}
+
+      Cluster ID: {{ rds_stack_output.stack_outputs.DBClusterId | default('N/A') }}
+      Subnet Group: {{ rds_stack_output.stack_outputs.ClusterDBSubnetGroup | default('N/A') }}
+
+      Connection String:
+      psql -h {{ rds_stack_output.stack_outputs.clusterEndpoint | default('ENDPOINT') }} -U {{ db_master_username }} -d {{ rds_stack_output.stack_outputs.DatabaseName | default('labdb') }} -p {{ rds_stack_output.stack_outputs.Port | default('5432') }}
+    dest: "{{ playbook_dir }}/rds_cluster_output.txt"
+  when: rds_stack_output is defined and rds_stack_output.changed
+  delegate_to: localhost

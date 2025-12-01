@@ -1,0 +1,112 @@
+---
+# tasks file for rds_aurora_delete
+
+- name: Display Deletion Warning
+  ansible.builtin.debug:
+    msg:
+      - "========================================="
+      - "   WARNING: PERMANENT DELETION"
+      - "========================================="
+      - "This will DELETE:"
+      - "  - CloudFormation Stack: {{ stack_name }}"
+      - "  - Aurora Cluster: {{ template_name }}-cluster"
+      - "  - DB Instance: {{ template_name }}-node-01"
+      - "  - DB Subnet Group: {{ template_name }}-db-subnet-group"
+      - "  - ALL DATABASE DATA"
+      - ""
+      - "NO SNAPSHOTS will be created!"
+      - "NO BACKUPS will be taken!"
+      - "This action is IRREVERSIBLE!"
+      - "========================================="
+
+- name: Confirm Deletion
+  ansible.builtin.pause:
+    prompt: "Type 'yes' to confirm permanent deletion"
+  register: confirm_input
+  when: confirm_delete is not defined or confirm_delete != "yes"
+
+- name: Validate Confirmation
+  ansible.builtin.fail:
+    msg: "Deletion cancelled - confirmation not received"
+  when:
+    - confirm_delete is not defined or confirm_delete != "yes"
+    - confirm_input.user_input | default('no') != 'yes'
+
+- name: Check if CloudFormation Stack Exists
+  amazon.aws.cloudformation_info:
+    stack_name: "{{ stack_name }}"
+    region: "{{ aws_region }}"
+  register: stack_info
+  ignore_errors: true
+
+- name: Display Current Stack Status
+  ansible.builtin.debug:
+    msg: "Current stack status: {{ stack_info.cloudformation[stack_name].stack_description.stack_status }}"
+  when:
+    - stack_info.cloudformation is defined
+    - stack_name in stack_info.cloudformation
+
+- name: Stack Not Found
+  ansible.builtin.debug:
+    msg: "Stack '{{ stack_name }}' does not exist or was already deleted"
+  when: stack_info.cloudformation is not defined or stack_name not in stack_info.cloudformation
+
+- name: Delete RDS Aurora CloudFormation Stack
+  amazon.aws.cloudformation:
+    stack_name: "{{ stack_name }}"
+    state: absent
+    region: "{{ aws_region }}"
+  when:
+    - stack_info.cloudformation is defined
+    - stack_name in stack_info.cloudformation
+  register: delete_result
+
+- name: Display Deletion Progress
+  ansible.builtin.debug:
+    msg:
+      - "Stack deletion initiated successfully!"
+      - "The stack is being deleted. This may take 5-10 minutes."
+  when: delete_result is defined and delete_result.changed
+
+- name: Wait for Stack Deletion to Begin
+  ansible.builtin.pause:
+    seconds: 30
+  when: delete_result is defined and delete_result.changed
+
+- name: Verify Stack Deletion
+  amazon.aws.cloudformation_info:
+    stack_name: "{{ stack_name }}"
+    region: "{{ aws_region }}"
+  register: verify_delete
+  ignore_errors: true
+
+- name: Save Deletion Summary
+  ansible.builtin.copy:
+    content: |
+      RDS Aurora PostgreSQL Stack Deletion Summary
+      ============================================
+      Date: {{ ansible_date_time.iso8601 }}
+      Stack Name: {{ stack_name }}
+      Region: {{ aws_region }}
+      Template Name: {{ template_name }}
+
+      Deleted Resources:
+      - Aurora Cluster: {{ template_name }}-cluster
+      - DB Instance: {{ template_name }}-node-01
+      - DB Subnet Group: {{ template_name }}-db-subnet-group
+
+      Status: Deletion initiated
+
+      Monitor deletion with:
+      aws cloudformation describe-stacks --stack-name {{ stack_name }} --region {{ aws_region }}
+
+      Or watch events:
+      aws cloudformation describe-stack-events --stack-name {{ stack_name }} --region {{ aws_region }} --max-items 10 --output table
+    dest: "{{ playbook_dir }}/rds_deletion_{{ ansible_date_time.date }}_{{ ansible_date_time.time | replace(':', '') }}.txt"
+  when: delete_result is defined and delete_result.changed
+  delegate_to: localhost
+
+- name: Deletion Complete Confirmation
+  ansible.builtin.debug:
+    msg: " Stack deletion complete or stack does not exist"
+  when: verify_delete.cloudformation is not defined or stack_name not in verify_delete.cloudformation

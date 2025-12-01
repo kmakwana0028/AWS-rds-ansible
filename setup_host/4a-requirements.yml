@@ -1,0 +1,5 @@
+---
+# Ansible Galaxy requirements for RDS Aurora PostgreSQL deployment
+
+collections:
+  - name: amazon.aws

@@ -1,0 +1,37 @@
+---
+# Ansible Playbook to Delete RDS Aurora PostgreSQL CloudFormation Stack
+#
+# WARNING: This will PERMANENTLY delete your RDS Aurora cluster!
+# NO SNAPSHOTS will be created! ALL DATA will be LOST!
+#
+# Usage:
+#   ansible-playbook delete_rds_stack.yml
+#
+# To skip confirmation:
+#   ansible-playbook delete_rds_stack.yml -e "confirm_delete=yes"
+
+- name: Delete RDS Aurora PostgreSQL Stack
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  vars_files:
+    - group_vars/rds_aurora_vars.yml
+
+  roles:
+    - role: rds_aurora_delete
+
+  post_tasks:
+    - name: Display Deletion Summary
+      ansible.builtin.debug:
+        msg:
+          - "========================================="
+          - "RDS Aurora PostgreSQL Stack Deletion Initiated"
+          - "========================================="
+          - "Stack deletion is in progress"
+          - "Deletion typically takes 5-10 minutes"
+          - ""
+          - "Monitor progress:"
+          - "  aws cloudformation describe-stacks --stack-name {{ stack_name }} --region {{ aws_region }}"
+          - ""
+          - "Check deletion summary file for details"
