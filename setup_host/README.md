@@ -3,13 +3,16 @@
 ====================
 Creates the VPC with 2 private & 2 public subnets across 2 AZ
 
-* CloudFormation Name = rdsa-vpc
+* CloudFormation Name = rds-vpc
+
+======================
+Setup 2-cr-security_group.yml
+======================
 
 Pre-requisite
 -------------
-Make sure there are 2 AZ's available in the region where created the VPC
+Creates Security groups for VPC with 2 private & 2 public subnets across 2 AZ
 
-aws ec2 describe-availability-zones --region   <<your region>>
 
 ======================
 Setup 3-cr-bastion-host.yml
@@ -18,10 +21,10 @@ Sets up an EC2 instance that is used for connecting/testing the cluster.
 
 Stack deletion: 
 ---------------
-The stack creates a Host Security group that is used by other bastion hosts etc. So if you try to delete the stack, you may get an error. To resolve it first delete the resources that have a dependency on the Security group and then delete this stack 
+The stack creates a Host Security group that is used by other bastion hosts etc. 
 
 =====
-Tools
+Required Tools
 =====
 These tools will be installed on the bastion host.
 1. git client
@@ -41,18 +44,18 @@ yum install git -y
 3. Clone the repository
 su - ec2-user
 
-git clone https://github.com/acloudfan/Amazon-RDS-Aurora-Postgres-v1.git
+git clone https://github.com/kmakwana0028/AWS-rds-ansible.git
 
 4. Install the tools
-cp -r Amazon-RDS-Aurora-Postgres-v1/bin .
-mkdir cloudformation
-cp -r Amazon-RDS-Aurora-Postgres-v1/vpc/*.yml ./cloudformation
-cp -r Amazon-RDS-Aurora-Postgres-v1/replicas/*.yml ./cloudformation
-cp -r Amazon-RDS-Aurora-Postgres-v1/cluster-basic/*.yml ./cloudformation
-cp -rf Amazon-RDS-Aurora-Postgres-v1/pgbench/ pgbench
+# cp -r Amazon-RDS-Aurora-Postgres-v1/bin .
+# mkdir cloudformation
+# cp -r Amazon-RDS-Aurora-Postgres-v1/vpc/*.yml ./cloudformation
+# cp -r Amazon-RDS-Aurora-Postgres-v1/replicas/*.yml ./cloudformation
+# cp -r Amazon-RDS-Aurora-Postgres-v1/cluster-basic/*.yml ./cloudformation
+# cp -rf Amazon-RDS-Aurora-Postgres-v1/pgbench/ pgbench
 
 chmod -R u+x bin
-sudo ./bin/install/psql-pgbench-jq.sh
+sudo ./psql-pgbench-jq.sh
 
 5. Validate the tools
 psql --version
@@ -61,7 +64,7 @@ jq --version
 
 6. Setup environment variables in .bashrc
 
-./bin/setup-env.sh  <<AWS REGION>>
+./setup-env.sh  <<AWS REGION>>
 
 source ~/.bashrc
 
