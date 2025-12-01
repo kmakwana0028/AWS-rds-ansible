@@ -28,9 +28,9 @@ These tools will be installed on the bastion host.
 3. pgbench
 4. jq
 
-======================================
+----------------------------------
 Setup tools on VM/Bastion Host (Linux)
-======================================
+----------------------------------
 1. SSH into the VM
 
 2. Install git
@@ -40,7 +40,7 @@ yum install git -y
 3. Clone the repository
 su - ec2-user
 
-git clone https://github.com/kmakwana0028/AWS-rds-ansible.git
+    git clone https://github.com/kmakwana0028/AWS-rds-ansible.git
 
 4. Install the tools
 # cp -r Amazon-RDS-Aurora-Postgres-v1/bin .
@@ -74,9 +74,9 @@ If you missed the step below then you will get an error:
 
 source ~/.bashrc
 
-=====================================
+----------------------------------
 install ansible to run the playbooks
-======================================
+----------------------------------
 pip3 install ansible boto3 botocore --user
 ansible-galaxy collection install -r requirements.yml
 OR
