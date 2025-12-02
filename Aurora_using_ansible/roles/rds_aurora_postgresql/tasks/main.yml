@@ -15,7 +15,7 @@
       Mappings:
         ClusterSettings:
           global:
-            dbSchema: labdb
+            dbSchema: testdb
             dbDriver: pgsql
 
       Resources:
@@ -93,7 +93,7 @@
       - "Cluster Endpoint: {{ rds_stack_output.stack_outputs.clusterEndpoint | default('Creating...') }}"
       - "Reader Endpoint: {{ rds_stack_output.stack_outputs.readerEndpoint | default('Creating...') }}"
       - "Port: {{ rds_stack_output.stack_outputs.Port | default('5432') }}"
-      - "Database Name: {{ rds_stack_output.stack_outputs.DatabaseName | default('labdb') }}"
+      - "Database Name: {{ rds_stack_output.stack_outputs.DatabaseName | default('testdb') }}"
       - "DB Username: {{ db_master_username }}"
   when: rds_stack_output is defined and rds_stack_output.changed
 
@@ -109,7 +109,7 @@
       Cluster Endpoint: {{ rds_stack_output.stack_outputs.clusterEndpoint | default('Check AWS Console') }}
       Reader Endpoint: {{ rds_stack_output.stack_outputs.readerEndpoint | default('Check AWS Console') }}
       Port: {{ rds_stack_output.stack_outputs.Port | default('5432') }}
-      Database Name: {{ rds_stack_output.stack_outputs.DatabaseName | default('labdb') }}
+      Database Name: {{ rds_stack_output.stack_outputs.DatabaseName | default('testdb') }}
       DB Username: {{ db_master_username }}
       DB Password: {{ db_master_user_password }}
 
@@ -117,7 +117,7 @@
       Subnet Group: {{ rds_stack_output.stack_outputs.ClusterDBSubnetGroup | default('N/A') }}
 
       Connection String:
-      psql -h {{ rds_stack_output.stack_outputs.clusterEndpoint | default('ENDPOINT') }} -U {{ db_master_username }} -d {{ rds_stack_output.stack_outputs.DatabaseName | default('labdb') }} -p {{ rds_stack_output.stack_outputs.Port | default('5432') }}
+      psql -h {{ rds_stack_output.stack_outputs.clusterEndpoint | default('ENDPOINT') }} -U {{ db_master_username }} -d {{ rds_stack_output.stack_outputs.DatabaseName | default('testdb') }} -p {{ rds_stack_output.stack_outputs.Port | default('5432') }}
     dest: "{{ playbook_dir }}/rds_cluster_output.txt"
   when: rds_stack_output is defined and rds_stack_output.changed
   delegate_to: localhost

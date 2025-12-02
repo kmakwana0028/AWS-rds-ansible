@@ -32,4 +32,4 @@ private_subnets: ""
 vpc_security_group_cluster: ""
 
 # Template Name for resource naming
-template_name: rdsa-postgresql
+template_name: rds-aurora-postgresql

@@ -35,7 +35,7 @@ Setup tools on VM/Bastion Host (Linux)
 
 2. Install git
 sudo su -
-yum install git -y
+dnf install git -y
 
 3. Clone the repository
 su - ec2-user
@@ -43,15 +43,10 @@ su - ec2-user
     git clone https://github.com/kmakwana0028/AWS-rds-ansible.git
 
 4. Install the tools
-# cp -r Amazon-RDS-Aurora-Postgres-v1/bin .
-# mkdir cloudformation
-# cp -r Amazon-RDS-Aurora-Postgres-v1/vpc/*.yml ./cloudformation
-# cp -r Amazon-RDS-Aurora-Postgres-v1/replicas/*.yml ./cloudformation
-# cp -r Amazon-RDS-Aurora-Postgres-v1/cluster-basic/*.yml ./cloudformation
-# cp -rf Amazon-RDS-Aurora-Postgres-v1/pgbench/ pgbench
+   Follow 4-Install-packages.txt
 
-chmod -R u+x bin
-sudo ./psql-pgbench-jq.sh
+# chmod -R u+x bin
+# sudo ./psql-pgbench-jq.sh
 
 5. Validate the tools
 psql --version
@@ -74,11 +69,27 @@ If you missed the step below then you will get an error:
 
 source ~/.bashrc
 
-----------------------------------
+<!-- ----------------------------------
 install ansible to run the playbooks
 ----------------------------------
+            sudo dnf update -y
+
+            # Install pip if not already present
+            sudo dnf install python3-pip -y
+
+            # (Optional but recommended) Create and activate a Python virtual environment
+            python3 -m venv ansible-env
+            source ansible-env/bin/activate
+
+            # Install Ansible using pip
+            pip install ansible
+
+sudo amazon-linux-extras install ansible2 -y
+
+sudo yum install python3-pip -y
+
 pip3 install ansible boto3 botocore --user
-ansible-galaxy collection install -r requirements.yml
+ansible-galaxy collection install -r /home/ec2-user/rds/AWS-rds-ansible/setup_host/4a-requirements.yml
 OR
 ansible-galaxy collection install amazon.aws --force
 
@@ -106,7 +117,7 @@ ansible-galaxy collection install amazon.aws --force
 
         # OR use the script
         ./install_dependencies.sh
-        ```
+        ``` -->
 
 
 ## Quick Test

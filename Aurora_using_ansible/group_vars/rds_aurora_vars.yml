@@ -12,7 +12,7 @@ stack_name: rds-aurora-postgresql-stack
 deployment_env: dev
 
 # Template Name for resource naming
-template_name: rds-ansible-postgresqlA
+template_name: rds-aurora-postgresql
 
 # Database Engine Version
 db_engine_version: "16.1"
