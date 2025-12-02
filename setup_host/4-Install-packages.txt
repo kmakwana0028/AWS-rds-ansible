@@ -1,7 +1,8 @@
-pip3 install --user ansible
+su - ec2-user
 sudo dnf install python3-pip -y
-sudo pip3 install --user ansible boto3 botocore
-sudo ansible-galaxy collection install amazon.aws
+pip3 install --user ansible
+pip3 install --user ansible boto3 botocore
+ansible-galaxy collection install amazon.aws
 sudo dnf install -y postgresql15-contrib
-sudo dnf install postgresql15 -y
-sudo dnf install jq -y
+# sudo dnf install postgresql15 -y
+# sudo dnf install jq -y

@@ -39,14 +39,13 @@ dnf install git -y
 
 3. Clone the repository
 su - ec2-user
-
+    mkdir rds
+    cd rds
     git clone https://github.com/kmakwana0028/AWS-rds-ansible.git
 
 4. Install the tools
-   Follow 4-Install-packages.txt
 
-# chmod -R u+x bin
-# sudo ./psql-pgbench-jq.sh
+   Follow 4-Install-packages.txt
 
 5. Validate the tools
 psql --version
@@ -69,55 +68,6 @@ If you missed the step below then you will get an error:
 
 source ~/.bashrc
 
-<!-- ----------------------------------
-install ansible to run the playbooks
-----------------------------------
-            sudo dnf update -y
-
-            # Install pip if not already present
-            sudo dnf install python3-pip -y
-
-            # (Optional but recommended) Create and activate a Python virtual environment
-            python3 -m venv ansible-env
-            source ansible-env/bin/activate
-
-            # Install Ansible using pip
-            pip install ansible
-
-sudo amazon-linux-extras install ansible2 -y
-
-sudo yum install python3-pip -y
-
-pip3 install ansible boto3 botocore --user
-ansible-galaxy collection install -r /home/ec2-user/rds/AWS-rds-ansible/setup_host/4a-requirements.yml
-OR
-ansible-galaxy collection install amazon.aws --force
-
-        ---Detailed steps for above requirements if any issues---
-
-        ## What You Need (Priority Order)
-
-        1. **boto3 and botocore** (CRITICAL) - These do the actual AWS API calls
-        2. **ansible-galaxy collection** (NICE TO HAVE) - Provides cleaner syntax
-        3. **AWS credentials** (CRITICAL) - Must be configured
-
-        ---
-
-        ## Recommended Deployment Steps
-
-        ### Step 1: Install boto3 (Critical)
-        ```bash
-        pip3 install --upgrade boto3 botocore --user
-        ```
-
-        ### Step 2: Try Collection Installation (Optional)
-        ```bash
-        # Try without requirements file
-        ansible-galaxy collection install amazon.aws --force
-
-        # OR use the script
-        ./install_dependencies.sh
-        ``` -->
 
 
 ## Quick Test
@@ -153,36 +103,12 @@ ansible-galaxy collection install amazon.aws --force
         3. Output of: `aws sts get-caller-identity`
         4. The exact error message from the playbook
 
-================================================
-(Auto) Bastion Host Setup Utility Script (Linux)
-================================================
-This method will setup the tools and all required scripts on your bastion host !! You may setup you own instance and just follow the steps here to setup the bastion host with required tools.
 
-
-1. Login to your Bastion Host VM as ec2-user
---------------------------------------------
-Copy and paste the commands in shell prompt on your bastion host
-
-2. run following
-----------------------------
-./setup-bastion.sh 
-
-3 Change mod of the file
-------------------------
-chmod u+x ./setup-bastion.sh 
-
-4. Setup the environment
-------------------------
-./setup-bastion.sh <<Provide AWS Region>>  
-
-If you see a message:
-"An error occurred (DBClusterNotFoundFault) when calling the DescribeDBClusters operation: DBCluster rdsa-postgresql-cluster not found." then that means the DB cluster stack is not created !! 
-
-5. Set the environment variables in the current shell
+Set the environment variables in the current shell
 -----------------------------------------------------
 source ~/.bashrc
 
-7. Use psql
+Use psql
 -----------
 psql                                  <<Uses $PGWRITEREP; Will give error in secondary region in case of global DB>>
 psql    -h $PGWRITEREP                <<Will give error in secondary region in case of global DB>>
@@ -197,32 +123,3 @@ Download and install PgAdmin
 ============================
 https://www.pgadmin.org/download/
 
-====================================
-CloudFormation Latest AMI for Linux2
-====================================
-https://aws.amazon.com/blogs/compute/query-for-the-latest-amazon-linux-ami-ids-using-aws-systems-manager-parameter-store/
-
-
-===================================
-CloudFormation Dependencies for VPC
-===================================
-1. Terminate all instances in your VPC
-2. Delete all ENI's associated with subnets within your VPC
-3. Detach all Internet and Virtual Private Gateways (you can then delete them and any VPN connections, but that's not required to delete the VPC object)
-3. Disassociate all route tables from all the subnets in your VPC
-4. Delete all route tables other than the "Main" table
-5. Disassociate all Network ACL's from all the subnets in your VPC
-6. Delete all Network ACL's other than the Default one
-7. Delete all Security groups other than the Default one (note: if one group has a rule that references another, you have to delete that rule before you can delete the other security group)
-8. Delete all subnets
-9. Delete your VPC
-10. Delete any DHCP Option Sets that had been used by the VPC
-
-========================================
-CloudFormation VPC Stack Deletion errors
-========================================
-Resolve dependancies due to creation of ENI in the VPC/Subnets
-https://aws.amazon.com/premiumsupport/knowledge-center/troubleshoot-dependency-error-delete-vpc/
-* Check for EC2>>Network Interfaces 
-* Delete resources using the ENI
-* Attempt the VPC deletion again
