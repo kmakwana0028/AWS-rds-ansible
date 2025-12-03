@@ -56,7 +56,18 @@
             Engine: aurora-postgresql
             EngineVersion: '{{ db_engine_version }}'
             PubliclyAccessible: false
-            
+
+        DBSecondaryNode:
+          Type: AWS::RDS::DBInstance
+          DependsOn: DBCluster
+          Properties:
+            DBInstanceIdentifier: {{ template_name }}-node-02
+            DBClusterIdentifier: !Ref DBCluster
+            DBInstanceClass: {{ db_instance_class }}
+            Engine: aurora-postgresql
+            EngineVersion: '{{ db_engine_version }}'
+            PubliclyAccessible: false
+
       Outputs:
         DBClusterId:
           Description: Cluster resource ARN
