@@ -6,3 +6,45 @@ ansible-galaxy collection install amazon.aws
 sudo dnf install -y postgresql15-contrib
 # sudo dnf install postgresql15 -y
 # sudo dnf install jq -y
+
+## Install Jenkins:
+    ## Configure the Security Group: Ensure that port 8080 (Jenkins' default port) is open
+       in the security group associated with your EC2 instance to allow inbound traffic.
+
+    sudo dnf install java-11-amazon-corretto-devel -y #11 Or a higher compatible java version
+    Or
+    sudo dnf install java-17-amazon-corretto -y    
+    java -version # Verify the java version
+
+
+    # Download Jenkins files
+
+    sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+    # Import the Jenkins GPG key
+    sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+
+    sudo dnf install jenkins -y # Install Jenkins
+        sudo systemctl enable jenkins
+        sudo systemctl start jenkins
+        sudo systemctl status jenkins
+    # Complete Post-Installation Setup:
+        # Open a web browser and navigate to your EC2 instance's public IP address or domain name, followed by port 8080 (e.g., http://your-ec2-ip:8080).
+        # Retrieve the initial administrator password from the Jenkins log file below
+        # Access : http://your_amazon_linux_instance_ip:8080
+
+    sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+        # Enter the password in the Jenkins setup wizard.
+        # Choose to install suggested plugins or select specific plugins.
+        # Create your first administrator user account.
+        # Complete the setup and start using Jenkins.
+
+## Install Terraform on EC2
+    sudo dnf update -y
+    sudo dnf install -y wget unzip
+    (download latest by referring the hashicorp page)
+    wget https://releases.hashicorp.com/terraform/1.7.5/terraform_1.7.5_linux_amd64.zip
+    unzip terraform_1.7.5_linux_amd64.zip
+    sudo mv terraform /usr/local/bin/
+    terraform --version
+
