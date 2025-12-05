@@ -1,4 +1,5 @@
 su - ec2-user
+sudo dnf install git -y
 sudo dnf install python3-pip -y
 pip3 install --user ansible
 pip3 install --user ansible boto3 botocore

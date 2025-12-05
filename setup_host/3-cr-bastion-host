@@ -129,7 +129,16 @@ Resources:
           Value: !Ref BastionHostInstanceName
       # KeyName: !Ref KeyName
       KeyName: !If [HasNoKeyName,  !Ref AWS::NoValue , !Ref KeyName]
-
+      UserData: !Base64 |
+        #!/bin/bash 
+        dnf update -y
+        dnf install git -y
+        dnf install python3-pip -y
+        pip3 install --user ansible
+        pip3 install --user ansible boto3 botocore
+        ansible-galaxy collection install amazon.aws
+        dnf install -y postgresql15-contrib
+        
 Outputs:
   BastionHostIP:
     Description: The Public Ip
@@ -143,4 +152,4 @@ Outputs:
           !GetAtt BastionEC2Instance.PublicIp
         ],
       ]
-    Description: Copy and run it in your shell
+    Description: Copy and run it.
