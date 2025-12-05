@@ -2,13 +2,6 @@
 ## 
 ## Creates the VPC for DB Cluster
 ##
-## Changelog:
-##
-## Dependencies:
-## none
-##
-## This sample code is made available under the MIT-0 license. See the LICENSE file.
-
 AWSTemplateFormatVersion: 2010-09-09
 Description: Creates the VPC for creating Aurora cluster
 
