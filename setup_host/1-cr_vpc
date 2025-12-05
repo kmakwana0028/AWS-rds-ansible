@@ -2,12 +2,8 @@
 ## 
 ## Creates the VPC for DB Cluster
 ##
-## Changelog:
+## Dependancies : none 
 ##
-## Dependencies:
-## none
-##
-## This sample code is made available under the MIT-0 license. See the LICENSE file.
 
 AWSTemplateFormatVersion: 2010-09-09
 Description: Creates the VPC for creating Aurora cluster
@@ -16,7 +12,7 @@ Description: Creates the VPC for creating Aurora cluster
 Parameters:
   TemplateName:
     Type: String
-    Default: rdsa-vpc
+    Default: rds-vpc
     Description: Name used for different elements created.
 
 ## Mappings
@@ -171,37 +167,37 @@ Resources:
 ## Outputs
 Outputs:
   MainVPC:
-    Description: ImmDays Lab VPC
+    Description: RDS Aurora VPC
     Value: !Ref MainVPC
     Export:
         Name: !Sub "${AWS::StackName}-MainVPC"
   PublicSubnetCidrA:
-    Description: PublicSubnetA CIDR for LAB
+    Description: PublicSubnetA CIDR for RDS Aurora
     Value: !Select [ 0, !Cidr [ !GetAtt MainVPC.CidrBlock, 4, 8 ]]
     Export:
         Name: !Sub "${AWS::Region}-${AWS::StackName}-PublicSubnetACidr"
   PublicSubnetCidrB:
-    Description: PublicSubnetB CIDR for LAB
+    Description: PublicSubnetB CIDR for RDS Aurora
     Value: !Select [ 1, !Cidr [ !GetAtt MainVPC.CidrBlock, 4, 8 ]]
     Export:
         Name: !Sub "${AWS::Region}-${AWS::StackName}-PublicSubnetBCidr"
   PublicSubnetA:
-    Description: PublicSubnetA for LAB
+    Description: PublicSubnetA for RDS Aurora
     Value: !Ref PublicSubnetA
     Export:
         Name: !Sub "${AWS::Region}-${AWS::StackName}-PublicSubnetA"
   PublicSubnetB:
-    Description: PublicSubnetB for LAB
+    Description: PublicSubnetB for RDS Aurora
     Value: !Ref PublicSubnetB
     Export:
         Name: !Sub "${AWS::Region}-${AWS::StackName}-PublicSubnetB"
   PrivateSubnetA:
-    Description: PrivateSubnetA for LAB
+    Description: PrivateSubnetA for RDS Aurora
     Value: !Ref PrivateSubnetA
     Export:
         Name: !Sub "${AWS::Region}-${AWS::StackName}-PrivateSubnetA"
   PrivateSubnetB:
-    Description: PrivateSubnetB for LAB
+    Description: PrivateSubnetB for RDS Aurora
     Value: !Ref PrivateSubnetB
     Export:
         Name: !Sub "${AWS::Region}-${AWS::StackName}-PrivateSubnetB"

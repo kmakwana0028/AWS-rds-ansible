@@ -6,8 +6,6 @@
 ##
 ## Dependencies:
 ## none
-##
-## This sample code is made available under the MIT-0 license. See the LICENSE file.
 
 AWSTemplateFormatVersion: 2010-09-09
 Description: Security group for the RDS cluster
@@ -17,7 +15,7 @@ Parameters:
 
   TemplateName:
     Type: String
-    Default: rdsa-security-group
+    Default: rds-security-group
     Description: Name used for different elements created
 
   # This is the VPC Id for the RDS VPC created earlier
@@ -66,7 +64,7 @@ Resources:
       GroupDescription: RDS cluster firewall
       Tags:
         - Key: Name
-          Value: !Sub ${TemplateName}-rdsa-internal
+          Value: !Sub ${TemplateName}-rds-internal
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: !Ref RdsIngressPort
