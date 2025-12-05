@@ -2,6 +2,9 @@
 ## 
 ## Creates the VPC for DB Cluster
 ##
+## Dependancies : none 
+##
+
 AWSTemplateFormatVersion: 2010-09-09
 Description: Creates the VPC for creating Aurora cluster
 
