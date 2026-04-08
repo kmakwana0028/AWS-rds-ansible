@@ -15,7 +15,7 @@
       Mappings:
         ClusterSettings:
           global:
-            dbSchema: testdb
+            dbSchema: testpgdb
             dbDriver: pgsql
 
       Resources:
