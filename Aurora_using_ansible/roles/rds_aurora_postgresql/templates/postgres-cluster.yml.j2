@@ -1,14 +1,6 @@
 ---
 ##
 ## Creates Aurora PostgreSQL Cluster
-## + May be used for creating the cluster and DB parameter groups
-## + Groups not applied to the cluster/instances
-## Changelog:
-##
-## Dependencies:
-## none
-##
-## This sample code is made available under the MIT-0 license. See the LICENSE file.
 
 AWSTemplateFormatVersion: 2010-09-09
 Description: Amazon RDS PostgreSQL Database Cluster Creation - Deployed via Ansible
@@ -16,7 +8,7 @@ Description: Amazon RDS PostgreSQL Database Cluster Creation - Deployed via Ansi
 Parameters:
   TemplateName:
     Type: String
-    Default: rdsa-postgresql
+    Default: rds-postgresql
     Description: Name used for different elements created.
 
   # This is the VPC Id for the RDS VPC created earlier
@@ -61,43 +53,24 @@ Parameters:
     Type: String
     Default: 15.2
     AllowedValues:
-      - 11.9
-      - 11.21
-      - 12.9
-      - 12.11
-      - 12.12
-      - 12.13
-      - 12.14
-      - 12.15
-      - 12.16
-      - 12.17
-      - 13.7
-      - 13.8
-      - 13.9
-      - 13.10
-      - 13.11
-      - 13.12
-      - 13.13
-      - 14.3
-      - 14.4
-      - 14.5
-      - 14.6
-      - 14.7
-      - 14.8
-      - 14.9
+     - 14.9
       - 14.10
-      - 15.2
-      - 15.3
-      - 15.4
-      - 15.5
-      - 16.1
-
+      - 15.10
+      - 15.12
+      - 15.13
+      - 15.14
+      - 15.15
+      - 15.16
+      - 15.17
+      - 16.10
+      - 16.11
+      - 16.13
 
 # Used as globals
 Mappings:
   ClusterSettings:
     global:
-      dbSchema: labdb
+      dbSchema: testpgdb
       dbDriver: pgsql
 
 
