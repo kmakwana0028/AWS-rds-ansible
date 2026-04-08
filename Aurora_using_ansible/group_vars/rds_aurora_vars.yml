@@ -15,7 +15,7 @@ deployment_env: dev
 template_name: rds-aurora-postgresql
 
 # Database Engine Version
-db_engine_version: "16.1"
+db_engine_version: "16.10"
 
 # Database Instance Class
 db_instance_class: db.t3.medium
